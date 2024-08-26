@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Cipher</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        #cipher-container {
+            text-align: center;
+        }
+
+        .fade-in-out {
+            color: red;
+            font-size: 100px;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #desperate-text {
+            color: red;
+            font-size: 30px;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        #message {
+            color: red;
+            font-size: 20px;
+            position: fixed;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        #cipher-text {
+            color: red;
+            font-size: 20px;
+            user-select: none; /* Make text unselectable */
+            white-space: pre-wrap; /* Preserve whitespace and line breaks */
+        }
+
+        #start {
+            color: red;
+            font-size: 30px;
+            position: fixed;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+        }
+
+        #win-text {
+            color: red;
+            font-size: 50px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="cipher-container">
+        <div id="number-8" class="fade-in-out">8</div>
+        <div id="desperate-text" class="hidden">You're so desperate</div>
+        <div id="message" class="hidden"></div>
+        <div id="cipher-text" class="hidden">
+            ⟟ ⍙⏃⋏⏁⟒⎅ ⌇⍜ ⋔⏃⋏⊬ ⎅⍀⟒⏃⋔⌇ ⏚⎍⏁ ⟟ ⎎⏃⟟⌰⟒⎅ ⟟ ⏁⍀⟟⟒⎅ ⏁⍜ ⏚⟒ ⌇⌿⟒☊⟟⏃⌰ ⏚⎍⏁ ⟟ ⎅⟟⎅ ⋏⍜⏁ ⟟ ⍙⏃⋏⏁⟒⎅ ⏁⍜ ⌇⊑⍜⍙ ⏁⊑⟒⋔ ⟟ ⏁⊑⟒ ⏚⟒⌇⏁ ⏚⎍⏁ ⟟ ☊⏃⋏'⏁ ⟟ ⏁⍀⟟⟒⎅ ⟟ ⏁⍀⟟⟒⎅ ⟟ ⏁⍀⟟⟒⎅ ⟟ ☊⏃⋏⏁ ⟟⋔ ☌⍜⟟⋏☌ ⟟⋏⌇⏃⋏⟒ ⟟ ⍙⏃⋏⏁ ⏁⍜ ⌰⟒⏃⎐⟒ ⏁⊑⟟⌇ ⏚⎍⏁ ⟟ ☊⏃⋏⏁ ⟟ ⏃⋔ ⏃ ⎎⏃⟟⌰⟒⎅ ⎎⍀⟒⏃☍ ⏁⊑⟟⌇ ⟟⌇ ⏁⊑⟒ ⟒⋏⎅ ⍜⎎ ⏁⊑⟒ ⍙⍜⍀⌰⎅ ⟟ ⌇⟒⟒ ⟟⏁ ⟟ ⌇⟒⟒ ⌇⏁⏃⏁⟟☊ ⟟ ⌇⟒⟒ ⟒⎐⟒⍀⊬⏁⊑⟟⋏☌ ⟟ ⏃⋔ ⏃ ⌿⍜⍙⟒⍀⎎⎍⌰⌰ ⎎⍀⟒⏃☍ ⟟ ⍙⟟⌰⌰ ⋔⏃☍⟒ ⌇⎍⍀⟒ ⟒⎐⟒⍀⊬⍜⋏⟒ ⍙⟟⌰⌰ ⍜⏚⟒⊬ ⋔⟒ ⟟ ☊⏃⋏⏁ ⌰⟒⏁ ⟒⎐⟒⍀⊬⍜⋏⟒ ⏁⏃☍⟒ ⏁⊑⟟⌇ ⏃⍙⏃⊬ ⎎⍀⍜⋔ ⋔⟒ ⏁⋏⎍⍜☊ ⟒⊑⏁ ⍀⟒⏁⏁⟒⌰ ⌇⏁⍀⏃⏁⌇ ⊑⏁⟟⍙ by⎎
+        </div>
+        <div id="start" class="hidden">START</div>
+        <div id="win-text" class="hidden">34 7<br>You win :(</div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const number8 = document.getElementById("number-8");
+            const desperateText = document.getElementById("desperate-text");
+            const cipherText = document.getElementById("cipher-text");
+            const start = document.getElementById("start");
+            const winText = document.getElementById("win-text");
+            const message = document.getElementById("message");
+
+            // Messages to display on each click
+            const messages = [
+                "Nothing will happen", // 1st to 8th clicks
+                "Nothing will happen",
+                "Nothing will happen",
+                "Nothing will happen",
+                "Nothing will happen",
+                "Nothing will happen",
+                "Nothing will happen",
+                "Nothing will happen",
+                "STOP STOP",           // 9th click
+                "YOU ARE NOT SMART",   // 10th click
+                "YOU ARE NOT THE SMART HERE STOP", // 11th click
+            ];
+            
+            // After 2 seconds, show the number 8 while background stays black
+            setTimeout(() => {
+                number8.style.opacity = 1;
+            }, 2000);
+            
+            let clickCount = 0;
+            
+            number8.addEventListener("click", () => {
+                if (clickCount < 12) {
+                    message.innerText = messages[clickCount] || "";
+                    message.style.opacity = 1;
+                    message.classList.remove("hidden");
+                    
+                    setTimeout(() => {
+                        message.style.opacity = 0;
+                    }, 1000);
+                    
+                    if (clickCount === 0) {
+                        number8.style.opacity = 0;
+                        setTimeout(() => {
+                            desperateText.classList.remove("hidden");
+                            desperateText.style.opacity = 1;
+                        }, 2000);
+                        
+                        setTimeout(() => {
+                            desperateText.style.opacity = 0;
+                            setTimeout(() => {
+                                desperateText.classList.add("hidden");
+                                number8.style.opacity = 1;
+                            }, 1000);
+                        }, 3000);
+                    }
+                    
+                    if (clickCount === 11) {
+                        setTimeout(() => {
+                            message.classList.add("hidden");
+                            number8.style.opacity = 0;
+                            setTimeout(() => {
+                                cipherText.classList.remove("hidden");
+                                start.classList.remove("hidden");
+                            }, 2000);
+                        }, 1000);
+                    }
+                    
+                    clickCount++;
+                }
+            });
+            
+            start.addEventListener("click", () => {
+                cipherText.classList.add("hidden");
+                start.classList.add("hidden");
+                winText.classList.remove("hidden");
+            });
+        });
+    </script>
+</body>
+</html>
